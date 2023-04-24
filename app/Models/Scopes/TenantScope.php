@@ -13,7 +13,8 @@ class TenantScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('tenant_id', 1);
-
+        if(session()->has('tenant_id')){
+            $builder->where('tenant_id', session('tenant_id'));
+        }
     }
 }
