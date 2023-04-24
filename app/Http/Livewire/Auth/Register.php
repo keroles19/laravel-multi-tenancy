@@ -30,8 +30,8 @@ class Register extends Component
     public function register()
     {
         $this->validate([
-            'name' => ['required', 'string'],
-            'companyName' => ['required', 'string', 'unique:tenants,name'],
+            'name' => ['required', 'string', 'min:6'],
+            'companyName' => ['required', 'string', 'unique:tenants,name', 'min:6'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:8'],
         ]);
@@ -47,11 +47,16 @@ class Register extends Component
             'password' => Hash::make($this->password),
             'tenant_id' => $tenant->id,
         ]);
+
         $user->sendEmailVerificationNotification();
 
         Auth::login($user, true);
 
         return redirect()->intended(route('home'));
+    }
+
+    public function updated($value) {
+        $this->resetErrorBag($value);
     }
 
     public function render()
